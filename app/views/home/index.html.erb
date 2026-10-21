@@ -1,9 +1,2 @@
 <%# Placeholder until the photo grid replaces it %>
 <h1>Photo Gallery</h1>
-
-<% if authenticated? %>
-  <p>Logged in as <%= Current.user.email_address %></p>
-  <%= button_to "Log out", session_path, method: :delete %>
-<% else %>
-  <p><%= link_to "Log in", new_session_path %></p>
-<% end %>

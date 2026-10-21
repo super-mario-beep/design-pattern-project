@@ -5,4 +5,12 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  helper_method :current_user
+
+  private
+    # The logged-in User, or nil for a guest (also on pages that allow guests)
+    def current_user
+      resume_session&.user
+    end
 end

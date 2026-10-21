@@ -24,6 +24,16 @@
   </head>
 
   <body>
+    <nav>
+      <ul>
+        <%= render main_menu.visible_children(current_user), user: current_user %>
+      </ul>
+      <% if current_user %>
+        <p>Logged in as <%= current_user.email_address %></p>
+        <%= button_to "Log out", session_path, method: :delete %>
+      <% end %>
+    </nav>
+
     <%= yield %>
   </body>
 </html>

@@ -9,7 +9,8 @@
 #   end
 
 if Rails.env.development?
-  User.find_or_create_by!(email_address: "admin@example.com") do |user|
+  admin = User.find_or_create_by!(email_address: "admin@example.com") do |user|
     user.password = "password"
   end
+  admin.update!(role: :admin)
 end
