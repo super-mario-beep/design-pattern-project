@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_151657) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_185226) do
   create_table "action_logs", force: :cascade do |t|
     t.integer "user_id"
     t.string "subject_type"
@@ -22,6 +22,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_151657) do
     t.index ["action", "created_at"], name: "index_action_logs_on_action_and_created_at"
     t.index ["subject_type", "subject_id"], name: "index_action_logs_on_subject"
     t.index ["user_id"], name: "index_action_logs_on_user_id"
+  end
+
+  create_table "hashtags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_hashtags_on_name", unique: true
+  end
+
+  create_table "photo_hashtags", force: :cascade do |t|
+    t.integer "photo_id", null: false
+    t.integer "hashtag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["hashtag_id"], name: "index_photo_hashtags_on_hashtag_id"
+    t.index ["photo_id", "hashtag_id"], name: "index_photo_hashtags_on_photo_id_and_hashtag_id", unique: true
+    t.index ["photo_id"], name: "index_photo_hashtags_on_photo_id"
+  end
+
+  create_table "photos", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.text "description"
+    t.string "storage_key", null: false
+    t.string "original_filename"
+    t.string "format", null: false
+    t.integer "byte_size", null: false
+    t.integer "width"
+    t.integer "height"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_photos_on_created_at"
+    t.index ["storage_key"], name: "index_photos_on_storage_key", unique: true
+    t.index ["user_id"], name: "index_photos_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -48,5 +81,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_151657) do
   end
 
   add_foreign_key "action_logs", "users", on_delete: :nullify
+  add_foreign_key "photo_hashtags", "hashtags"
+  add_foreign_key "photo_hashtags", "photos"
+  add_foreign_key "photos", "users"
   add_foreign_key "sessions", "users"
 end

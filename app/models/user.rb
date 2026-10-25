@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
+  has_many :photos, dependent: :destroy
 
   enum :role, { user: "user", admin: "admin" }
 
@@ -24,6 +25,14 @@ class User < ApplicationRecord
   # A requested change that has not started yet
   def pending_tier_name
     next_tier_name unless next_tier_started?
+  end
+
+  def uploads_today
+    ActionLog.where(user: self, action: "photo.uploaded", created_at: Time.current.all_day).count
+  end
+
+  def storage_used
+    photos.sum(:byte_size)
   end
 
   def can_change_tier?
