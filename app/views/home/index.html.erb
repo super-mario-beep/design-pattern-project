@@ -1,2 +1,25 @@
-<%# Placeholder until the photo grid replaces it %>
-<h1>Photo Gallery</h1>
+<div class="page-header">
+  <div>
+    <h1>Latest photos</h1>
+    <p class="page-header__subtitle">The 10 most recent uploads from the community</p>
+  </div>
+  <% if current_user %>
+    <%= link_to "Upload a photo", new_photo_path, class: "button" %>
+  <% end %>
+</div>
+
+<% if @photos.any? %>
+  <div class="photo-grid">
+    <%= render @photos %>
+  </div>
+<% else %>
+  <div class="empty card">
+    <h2>No photos yet</h2>
+    <p class="muted">Be the first to share a photo.</p>
+    <% if current_user %>
+      <%= link_to "Upload a photo", new_photo_path, class: "button" %>
+    <% else %>
+      <%= link_to "Sign up", new_registration_path, class: "button" %>
+    <% end %>
+  </div>
+<% end %>

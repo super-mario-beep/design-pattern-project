@@ -1,0 +1,7 @@
+<% if photo.hashtags.any? %>
+  <ul class="hashtags">
+    <% photo.hashtags.each do |hashtag| %>
+      <li><%= link_to "##{hashtag.name}", search_path(hashtags: hashtag.name) %></li>
+    <% end %>
+  </ul>
+<% end %>

@@ -1,37 +1,47 @@
-<h1>Sign up</h1>
+<div class="auth">
+  <div class="auth-card auth-card--wide card">
+    <h1>Create an account</h1>
+    <p class="muted">Pick a package now, you can change it later once a day.</p>
 
-<%= render "shared/errors", record: @user %>
+    <%= render "shared/errors", record: @user %>
 
-<%= form_with model: @user, url: registration_path do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name, required: true, autofocus: true %>
-  </div>
-
-  <div>
-    <%= form.label :email_address %>
-    <%= form.email_field :email_address, required: true, autocomplete: "username" %>
-  </div>
-
-  <div>
-    <%= form.label :password %>
-    <%= form.password_field :password, required: true, autocomplete: "new-password", minlength: 8, maxlength: 72 %>
-  </div>
-
-  <div>
-    <%= form.label :password_confirmation %>
-    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
-  </div>
-
-  <fieldset>
-    <legend>Package</legend>
-    <% Tiers.all.each do |tier| %>
-      <div>
-        <%= form.radio_button :tier_name, tier.name.downcase %>
-        <%= form.label :tier_name, "#{tier.name}: #{tier_summary(tier)}", value: tier.name.downcase %>
+    <%= form_with model: @user, url: registration_path, class: "form" do |form| %>
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :name %>
+          <%= form.text_field :name, required: true, autofocus: true %>
+        </div>
+        <div class="field">
+          <%= form.label :email_address %>
+          <%= form.email_field :email_address, required: true, autocomplete: "username" %>
+        </div>
       </div>
-    <% end %>
-  </fieldset>
 
-  <%= form.submit "Sign up" %>
-<% end %>
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :password %>
+          <%= form.password_field :password, required: true, autocomplete: "new-password", minlength: 8, maxlength: 72 %>
+        </div>
+        <div class="field">
+          <%= form.label :password_confirmation %>
+          <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", maxlength: 72 %>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">Package</span>
+        <div class="tier-options">
+          <% Tiers.all.each do |tier| %>
+            <%= render "tiers/option", form: form, field: :tier_name, tier: tier %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= form.submit "Create account", class: "button button--block" %>
+    <% end %>
+
+    <div class="auth-links">
+      <span>Already have an account? <%= link_to "Log in", new_session_path %></span>
+    </div>
+  </div>
+</div>

@@ -1,12 +1,40 @@
-<h1>Photo</h1>
+<%= link_to "← Back to gallery", root_path, class: "back-link" %>
 
-<p><%= image_tag file_photo_path(@photo), alt: @photo.description.presence || "Photo" %></p>
+<article class="photo-detail">
+  <div class="photo-detail__stage">
+    <%= link_to file_photo_path(@photo), title: "Open full size" do %>
+      <%= image_tag file_photo_path(@photo), alt: @photo.description.presence || "Photo" %>
+    <% end %>
+  </div>
 
-<p><%= @photo.description %></p>
-<p>By <%= @photo.user.name %>, uploaded <%= l @photo.created_at, format: :long %></p>
-<p>
-  <% @photo.hashtags.each do |hashtag| %>
-    #<%= hashtag.name %>
-  <% end %>
-</p>
-<p><%= @photo.format.upcase %>, <%= @photo.width %>×<%= @photo.height %>, <%= number_to_human_size(@photo.byte_size) %></p>
+  <aside class="photo-detail__info card">
+    <h1><%= @photo.description.presence || "Untitled" %></h1>
+
+    <div class="author-line">
+      <span class="avatar" aria-hidden="true"><%= @photo.user.name.first.upcase %></span>
+      <div>
+        <strong><%= @photo.user.name %></strong>
+        <span class="muted">Uploaded <%= time_tag @photo.created_at, l(@photo.created_at, format: "%d.%m.%Y %H:%M") %></span>
+      </div>
+    </div>
+
+    <%= render "photos/hashtags", photo: @photo %>
+
+    <dl class="details">
+      <dt>Format</dt>
+      <dd><%= @photo.format.upcase %></dd>
+      <dt>Dimensions</dt>
+      <dd><%= @photo.width %> &times; <%= @photo.height %> px</dd>
+      <dt>File size</dt>
+      <dd><%= number_to_human_size(@photo.byte_size) %></dd>
+    </dl>
+
+    <div class="actions">
+      <%= link_to "Open full size", file_photo_path(@photo), class: "button button--ghost" %>
+      <% if can_manage?(@photo) %>
+        <%= link_to "Edit", edit_photo_path(@photo), class: "button" %>
+        <%= button_to "Delete", @photo, method: :delete, class: "button button--danger", form: { data: { turbo_confirm: "Delete this photo?" } } %>
+      <% end %>
+    </div>
+  </aside>
+</article>

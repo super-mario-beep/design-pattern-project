@@ -1,0 +1,16 @@
+<article class="photo-card">
+  <%= link_to photo, class: "photo-card__image" do %>
+    <%= image_tag thumbnail_photo_path(photo), alt: photo.description.presence || "Photo", loading: "lazy" %>
+  <% end %>
+  <div class="photo-card__body">
+    <h3 class="photo-card__title"><%= link_to photo.description.presence || "Untitled", photo %></h3>
+    <div class="photo-card__meta">
+      <span class="author">
+        <span class="avatar avatar--sm" aria-hidden="true"><%= photo.user.name.first.upcase %></span>
+        <span class="author__name"><%= photo.user.name %></span>
+      </span>
+      <%= time_tag photo.created_at, l(photo.created_at, format: "%d.%m.%Y %H:%M"), class: "photo-card__date" %>
+    </div>
+    <%= render "photos/hashtags", photo: photo %>
+  </div>
+</article>

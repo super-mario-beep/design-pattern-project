@@ -1,54 +1,63 @@
-<h1>Upload a photo</h1>
-
-<% tier = current_user.tier %>
-<p>
-  <%= tier.name %> package:
-  <%= current_user.uploads_today %> of <%= tier.daily_upload_limit || "unlimited" %> uploads today,
-  <%= number_to_human_size(current_user.storage_used) %> of <%= number_to_human_size(tier.total_storage) %> storage used,
-  up to <%= number_to_human_size(tier.max_file_size) %> per photo
-</p>
-
-<%= form_with scope: :photo, url: photos_path do |form| %>
+<div class="page-header">
   <div>
-    <%= form.label :file, "Photo (JPG, PNG or BMP)" %>
-    <%= form.file_field :file, accept: "image/jpeg,image/png,image/bmp", required: true %>
+    <h1>Upload a photo</h1>
+    <p class="page-header__subtitle">JPG, PNG or BMP. Choose how the photo is processed before it is saved.</p>
   </div>
+</div>
 
-  <div>
-    <%= form.label :description %>
-    <%= form.text_area :description, value: @upload[:description] %>
-  </div>
-
-  <div>
-    <%= form.label :hashtags %>
-    <%= form.text_field :hashtags, value: @upload[:hashtags], placeholder: "#sunset #beach" %>
-  </div>
-
-  <fieldset>
-    <legend>Processing before saving</legend>
-
-    <div>
-      <%= form.label :resize_width, "Max width" %>
-      <%= form.number_field :resize_width, value: @upload[:resize_width], min: 1 %>
-      <%= form.label :resize_height, "Max height" %>
-      <%= form.number_field :resize_height, value: @upload[:resize_height], min: 1 %>
+<div class="with-sidebar">
+  <%= form_with scope: :photo, url: photos_path, class: "form card" do |form| %>
+    <div class="field">
+      <%= form.label :file, "Photo" %>
+      <%= form.file_field :file, accept: "image/jpeg,image/png,image/bmp", required: true %>
     </div>
 
-    <div>
-      <%= form.check_box :sepia, checked: @upload[:sepia] == "1" %>
-      <%= form.label :sepia, "Sepia" %>
+    <div class="field">
+      <%= form.label :description %>
+      <%= form.text_area :description, value: @upload[:description], rows: 3 %>
     </div>
 
-    <div>
-      <%= form.check_box :blur, checked: @upload[:blur] == "1" %>
-      <%= form.label :blur, "Blur" %>
+    <div class="field">
+      <%= form.label :hashtags %>
+      <%= form.text_field :hashtags, value: @upload[:hashtags], placeholder: "#sunset #beach" %>
     </div>
 
-    <div>
-      <%= form.label :format %>
-      <%= form.select :format, [ [ "Keep original", "" ], [ "JPG", "jpg" ], [ "PNG", "png" ], [ "BMP", "bmp" ] ], selected: @upload[:format] %>
-    </div>
-  </fieldset>
+    <fieldset>
+      <legend>Processing before saving</legend>
 
-  <%= form.submit "Upload" %>
-<% end %>
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :resize_width, "Max width (px)" %>
+          <%= form.number_field :resize_width, value: @upload[:resize_width], min: 1 %>
+        </div>
+        <div class="field">
+          <%= form.label :resize_height, "Max height (px)" %>
+          <%= form.number_field :resize_height, value: @upload[:resize_height], min: 1 %>
+        </div>
+        <div class="field">
+          <%= form.label :format %>
+          <%= form.select :format, [ [ "Keep original", "" ], [ "JPG", "jpg" ], [ "PNG", "png" ], [ "BMP", "bmp" ] ], selected: @upload[:format] %>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <div class="checkbox">
+          <%= form.check_box :sepia, checked: @upload[:sepia] == "1" %>
+          <%= form.label :sepia, "Sepia" %>
+        </div>
+        <div class="checkbox">
+          <%= form.check_box :blur, checked: @upload[:blur] == "1" %>
+          <%= form.label :blur, "Blur" %>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <%= form.submit "Upload photo", class: "button" %>
+    </div>
+  <% end %>
+
+  <aside>
+    <%= render "tiers/usage", user: current_user %>
+  </aside>
+</div>

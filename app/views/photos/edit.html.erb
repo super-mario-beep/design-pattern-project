@@ -1,0 +1,24 @@
+<%= link_to "← Back to photo", @photo, class: "back-link" %>
+
+<div class="narrow">
+  <h1>Edit photo</h1>
+
+  <%= render "shared/errors", record: @photo %>
+
+  <%= form_with model: @photo, class: "form card" do |form| %>
+    <div class="field">
+      <%= form.label :description %>
+      <%= form.text_area :description, rows: 3 %>
+    </div>
+
+    <div class="field">
+      <%= form.label :hashtag_list, "Hashtags" %>
+      <%= form.text_field :hashtag_list, placeholder: "#sunset #beach" %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit "Save changes", class: "button" %>
+      <%= link_to "Cancel", @photo, class: "button button--ghost" %>
+    </div>
+  <% end %>
+</div>

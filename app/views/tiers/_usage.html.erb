@@ -1,0 +1,34 @@
+<% tier = user.tier %>
+<% uploads = user.uploads_today %>
+<% storage = user.storage_used %>
+<section class="usage card">
+  <div class="usage__header">
+    <h2>Your package</h2>
+    <span class="badge badge--<%= tier.name.downcase %>"><%= tier.name %></span>
+  </div>
+
+  <div class="usage__item">
+    <div class="usage__label">
+      <span>Uploads today</span>
+      <strong><%= uploads %> / <%= tier.daily_upload_limit || "unlimited" %></strong>
+    </div>
+    <div class="progress">
+      <span style="width: <%= tier.daily_upload_limit ? [ uploads * 100.0 / tier.daily_upload_limit, 100 ].min.round(1) : 0 %>%"></span>
+    </div>
+  </div>
+
+  <div class="usage__item">
+    <div class="usage__label">
+      <span>Storage</span>
+      <strong><%= number_to_human_size(storage) %> / <%= number_to_human_size(tier.total_storage) %></strong>
+    </div>
+    <div class="progress">
+      <span style="width: <%= [ storage * 100.0 / tier.total_storage, 100 ].min.round(1) %>%"></span>
+    </div>
+  </div>
+
+  <div class="usage__label">
+    <span>Max photo size</span>
+    <strong><%= number_to_human_size(tier.max_file_size) %></strong>
+  </div>
+</section>

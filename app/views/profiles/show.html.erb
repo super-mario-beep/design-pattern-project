@@ -1,29 +1,43 @@
-<h1>Profile</h1>
+<div class="page-header">
+  <h1>Profile</h1>
+</div>
 
-<p>Name: <%= @user.name %></p>
-<p>Email: <%= @user.email_address %></p>
-
-<h2>Package</h2>
-
-<p>Current package: <%= @user.tier.name %> (<%= tier_summary(@user.tier) %>)</p>
-
-<% if @user.pending_tier_name %>
-  <p>From <%= l @user.next_tier_starts_on %>: <%= @user.pending_tier_name.upcase %></p>
-<% end %>
-
-<h3>Change package</h3>
-
-<% if @user.can_change_tier? %>
-  <%= form_with url: tier_change_path do |form| %>
-    <% Tiers.all.reject { |tier| tier.name == @user.tier.name }.each do |tier| %>
+<div class="profile-grid">
+  <section class="card">
+    <h2>Account</h2>
+    <div class="author-line">
+      <span class="avatar avatar--lg" aria-hidden="true"><%= @user.name.first.upcase %></span>
       <div>
-        <%= form.radio_button :tier_name, tier.name.downcase, required: true %>
-        <%= form.label "tier_name_#{tier.name.downcase}", "#{tier.name}: #{tier_summary(tier)}" %>
+        <strong><%= @user.name %></strong>
+        <span class="muted"><%= @user.email_address %></span>
+      </div>
+    </div>
+  </section>
+
+  <%= render "tiers/usage", user: @user %>
+</div>
+
+<section class="card">
+  <h2>Change package</h2>
+  <p class="muted">Current package: <%= @user.tier.name %> (<%= tier_summary(@user.tier) %>)</p>
+
+  <% if @user.pending_tier_name %>
+    <div class="flash flash-notice">Your package changes to <strong><%= @user.pending_tier_name.upcase %></strong> on <%= l @user.next_tier_starts_on %>.</div>
+  <% end %>
+
+  <% if @user.can_change_tier? %>
+    <%= form_with url: tier_change_path do |form| %>
+      <div class="tier-options">
+        <% Tiers.all.reject { |tier| tier.name == @user.tier.name }.each do |tier| %>
+          <%= render "tiers/option", form: form, field: :tier_name, tier: tier %>
+        <% end %>
+      </div>
+      <div class="actions">
+        <%= form.submit "Change package", class: "button" %>
+        <span class="muted">The new package starts tomorrow. You can change it once a day.</span>
       </div>
     <% end %>
-    <%= form.submit "Change package" %>
+  <% else %>
+    <p class="muted">You already changed your package today. You can change it again tomorrow.</p>
   <% end %>
-  <p>The new package starts tomorrow. You can change your package once a day.</p>
-<% else %>
-  <p>You already changed your package today. You can change it again tomorrow.</p>
-<% end %>
+</section>

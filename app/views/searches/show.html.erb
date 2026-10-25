@@ -1,0 +1,52 @@
+<div class="page-header">
+  <div>
+    <h1>Search photos</h1>
+    <p class="page-header__subtitle">Filter by hashtags, author, file size and upload time</p>
+  </div>
+</div>
+
+<%= form_with url: search_path, method: :get, class: "form search-form card" do |form| %>
+  <div class="field-row">
+    <div class="field">
+      <%= form.label :hashtags %>
+      <%= form.text_field :hashtags, value: @query[:hashtags], placeholder: "#sunset #beach" %>
+    </div>
+    <div class="field">
+      <%= form.label :author %>
+      <%= form.text_field :author, value: @query[:author] %>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <%= form.label :min_size, "Min size (KB)" %>
+      <%= form.number_field :min_size, value: @query[:min_size], min: 0 %>
+    </div>
+    <div class="field">
+      <%= form.label :max_size, "Max size (KB)" %>
+      <%= form.number_field :max_size, value: @query[:max_size], min: 0 %>
+    </div>
+    <div class="field">
+      <%= form.label :uploaded_from, "Uploaded from" %>
+      <%= form.datetime_local_field :uploaded_from, value: @query[:uploaded_from] %>
+    </div>
+    <div class="field">
+      <%= form.label :uploaded_to, "Uploaded to" %>
+      <%= form.datetime_local_field :uploaded_to, value: @query[:uploaded_to] %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Search", name: nil, class: "button" %>
+    <%= link_to "Clear", search_path, class: "button button--ghost" %>
+  </div>
+<% end %>
+
+<% if @photos %>
+  <h2 class="results-title"><%= pluralize(@photos.size, "photo") %> found</h2>
+  <% if @photos.any? %>
+    <div class="photo-grid">
+      <%= render @photos %>
+    </div>
+  <% end %>
+<% end %>

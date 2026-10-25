@@ -1,0 +1,10 @@
+<label class="tier-option">
+  <%= form.radio_button field, tier.name.downcase, required: true %>
+  <span class="tier-option__name"><%= tier.name %></span>
+  <span class="tier-option__price"><%= tier.price %> € <small>/ month</small></span>
+  <ul class="tier-option__features">
+    <li><%= number_to_human_size(tier.max_file_size) %> per photo</li>
+    <li><%= tier.daily_upload_limit ? "#{tier.daily_upload_limit} uploads a day" : "Unlimited uploads" %></li>
+    <li><%= number_to_human_size(tier.total_storage) %> storage</li>
+  </ul>
+</label>

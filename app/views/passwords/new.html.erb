@@ -1,6 +1,18 @@
-<h1>Forgot your password?</h1>
+<div class="auth">
+  <div class="auth-card card">
+    <h1>Forgot your password?</h1>
+    <p class="muted">Enter your email and we will send you a reset link.</p>
 
-<%= form_with url: passwords_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.submit "Email reset instructions" %>
-<% end %>
+    <%= form_with url: passwords_path, class: "form" do |form| %>
+      <div class="field">
+        <%= form.label :email_address %>
+        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address] %>
+      </div>
+      <%= form.submit "Email reset instructions", class: "button button--block" %>
+    <% end %>
+
+    <div class="auth-links">
+      <%= link_to "Back to log in", new_session_path %>
+    </div>
+  </div>
+</div>
