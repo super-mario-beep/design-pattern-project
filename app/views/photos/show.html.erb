@@ -1,0 +1,12 @@
+<h1>Photo</h1>
+
+<p><%= image_tag file_photo_path(@photo), alt: @photo.description.presence || "Photo" %></p>
+
+<p><%= @photo.description %></p>
+<p>By <%= @photo.user.name %>, uploaded <%= l @photo.created_at, format: :long %></p>
+<p>
+  <% @photo.hashtags.each do |hashtag| %>
+    #<%= hashtag.name %>
+  <% end %>
+</p>
+<p><%= @photo.format.upcase %>, <%= @photo.width %>×<%= @photo.height %>, <%= number_to_human_size(@photo.byte_size) %></p>
