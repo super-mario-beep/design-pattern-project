@@ -1,0 +1,29 @@
+<h1>Profile</h1>
+
+<p>Name: <%= @user.name %></p>
+<p>Email: <%= @user.email_address %></p>
+
+<h2>Package</h2>
+
+<p>Current package: <%= @user.tier.name %> (<%= tier_summary(@user.tier) %>)</p>
+
+<% if @user.pending_tier_name %>
+  <p>From <%= l @user.next_tier_starts_on %>: <%= @user.pending_tier_name.upcase %></p>
+<% end %>
+
+<h3>Change package</h3>
+
+<% if @user.can_change_tier? %>
+  <%= form_with url: tier_change_path do |form| %>
+    <% Tiers.all.reject { |tier| tier.name == @user.tier.name }.each do |tier| %>
+      <div>
+        <%= form.radio_button :tier_name, tier.name.downcase, required: true %>
+        <%= form.label "tier_name_#{tier.name.downcase}", "#{tier.name}: #{tier_summary(tier)}" %>
+      </div>
+    <% end %>
+    <%= form.submit "Change package" %>
+  <% end %>
+  <p>The new package starts tomorrow. You can change your package once a day.</p>
+<% else %>
+  <p>You already changed your package today. You can change it again tomorrow.</p>
+<% end %>

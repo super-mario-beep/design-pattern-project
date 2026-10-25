@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_21_151203) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_151657) do
   create_table "action_logs", force: :cascade do |t|
     t.integer "user_id"
     t.string "subject_type"
@@ -39,6 +39,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_21_151203) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role", default: "user", null: false
+    t.string "name"
+    t.string "tier_name", default: "free", null: false
+    t.string "next_tier_name"
+    t.date "next_tier_starts_on"
+    t.date "tier_changed_on"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
