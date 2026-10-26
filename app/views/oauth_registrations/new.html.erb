@@ -1,0 +1,26 @@
+<div class="auth">
+  <div class="auth-card auth-card--wide card">
+    <h1>Finish signing up</h1>
+    <p class="muted">You are signing up with <%= @provider_label %> as <strong><%= @profile["email"] %></strong>. Choose your name and package.</p>
+
+    <%= render "shared/errors", record: @user %>
+
+    <%= form_with model: @user, url: oauth_registration_path, class: "form" do |form| %>
+      <div class="field">
+        <%= form.label :name %>
+        <%= form.text_field :name, required: true, autofocus: true %>
+      </div>
+
+      <div class="field">
+        <span class="label">Package</span>
+        <div class="tier-options">
+          <% Tiers.all.each do |tier| %>
+            <%= render "tiers/option", form: form, field: :tier_name, tier: tier %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= form.submit "Create account", class: "button button--block" %>
+    <% end %>
+  </div>
+</div>

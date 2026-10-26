@@ -66,3 +66,7 @@ group :test do
 end
 
 gem "aws-sdk-s3", "~> 1.235", require: false
+
+gem "omniauth", "~> 2.3"
+gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-rails_csrf_protection", "~> 2.0"

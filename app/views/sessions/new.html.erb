@@ -3,6 +3,8 @@
     <h1>Log in</h1>
     <p class="muted">Welcome back. Log in to upload and manage your photos.</p>
 
+    <%= render "shared/oauth_buttons" %>
+
     <%= form_with url: session_path, class: "form" do |form| %>
       <div class="field">
         <%= form.label :email_address %>

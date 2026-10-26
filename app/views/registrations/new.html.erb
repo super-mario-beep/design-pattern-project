@@ -3,6 +3,8 @@
     <h1>Create an account</h1>
     <p class="muted">Pick a package now, you can change it later once a day.</p>
 
+    <%= render "shared/oauth_buttons" %>
+
     <%= render "shared/errors", record: @user %>
 
     <%= form_with model: @user, url: registration_path, class: "form" do |form| %>

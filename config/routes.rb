@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resource :registration, only: %i[ new create ]
+  resource :oauth_registration, only: %i[ new create ]
+  match "/auth/:provider/callback", to: "oauth_callbacks#create", via: %i[ get post ]
+  get "/auth/failure", to: "oauth_callbacks#failure"
   resource :profile, only: :show
   resource :tier_change, only: :create
   resources :photos, except: :index do

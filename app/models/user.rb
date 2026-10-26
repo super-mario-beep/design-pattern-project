@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :photos, dependent: :destroy
+  has_many :identities, dependent: :destroy
 
   enum :role, { user: "user", admin: "admin" }
 
