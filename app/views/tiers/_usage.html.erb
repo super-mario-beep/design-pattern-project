@@ -3,7 +3,7 @@
 <% storage = user.storage_used %>
 <section class="usage card">
   <div class="usage__header">
-    <h2>Your package</h2>
+    <h2><%= local_assigns.fetch(:title, "Your package") %></h2>
     <span class="badge badge--<%= tier.name.downcase %>"><%= tier.name %></span>
   </div>
 

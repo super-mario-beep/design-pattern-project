@@ -62,6 +62,16 @@ class PhotosController < ApplicationController
     head :not_found
   end
 
+  def download
+    service = PhotoDownloadService.new(Current.user, @photo)
+    result = params[:edited].present? ? service.edited(download_options) : service.original
+    send_data result.data, filename: result.filename, type: result.content_type, disposition: :attachment
+  rescue StorageAdapter::FileNotFound
+    redirect_to @photo, alert: "The photo file is missing."
+  rescue ImageProcessing::Error, MiniMagick::Error
+    redirect_to @photo, alert: "The photo could not be processed."
+  end
+
   def thumbnail
     Tempfile.create([ "photo", ".#{@photo.format}" ], binmode: true) do |source|
       source.write(StorageAdapter.current.read(@photo.storage_key))
@@ -79,6 +89,10 @@ class PhotosController < ApplicationController
   private
     def set_photo
       @photo = Photo.find(params[:id])
+    end
+
+    def download_options
+      params.slice(:resize_width, :resize_height, :sepia, :blur, :format).permit(:resize_width, :resize_height, :sepia, :blur, :format)
     end
 
     def can_manage?(photo)

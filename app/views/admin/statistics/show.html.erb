@@ -1,0 +1,108 @@
+<div class="page-header">
+  <div>
+    <h1>Statistics</h1>
+    <p class="page-header__subtitle">Usage of the whole application</p>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat card">
+    <span class="stat__label">Users</span>
+    <span class="stat__value"><%= number_with_delimiter(@user_count) %></span>
+  </div>
+  <div class="stat card">
+    <span class="stat__label">Photos</span>
+    <span class="stat__value"><%= number_with_delimiter(@photo_count) %></span>
+  </div>
+  <div class="stat card">
+    <span class="stat__label">Storage used</span>
+    <span class="stat__value"><%= number_to_human_size(@storage_total) %></span>
+  </div>
+  <div class="stat card">
+    <span class="stat__label">Uploads today</span>
+    <span class="stat__value"><%= number_with_delimiter(@uploads_today) %></span>
+  </div>
+  <div class="stat card">
+    <span class="stat__label">Logins today</span>
+    <span class="stat__value"><%= number_with_delimiter(@logins_today) %></span>
+  </div>
+  <div class="stat card">
+    <span class="stat__label">Downloads</span>
+    <span class="stat__value"><%= number_with_delimiter(@downloads_total) %></span>
+  </div>
+</div>
+
+<div class="chart-grid">
+  <section class="card">
+    <h2>Uploads in the last 7 days</h2>
+    <% max_uploads = @uploads_by_day.map(&:last).max %>
+    <div class="column-chart">
+      <% @uploads_by_day.each do |day, count| %>
+        <div class="column-chart__item" title="<%= l day, format: "%a %d.%m." %>: <%= pluralize(count, "upload") %>">
+          <span class="column-chart__value"><%= count if count == max_uploads && count.positive? %></span>
+          <span class="column-chart__bar" style="height: <%= bar_percent(count, max_uploads) %>%"></span>
+          <span class="column-chart__label"><%= l day, format: "%a" %></span>
+        </div>
+      <% end %>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Users per package</h2>
+    <% max_users = @users_per_tier.map(&:last).max %>
+    <div class="bar-list">
+      <% @users_per_tier.each do |tier, count| %>
+        <div class="bar-list__row" title="<%= tier %>: <%= pluralize(count, "user") %>">
+          <span class="bar-list__label"><%= tier %></span>
+          <span class="bar-list__track"><span class="bar-list__bar" style="width: <%= bar_percent(count, max_users) %>%"></span></span>
+          <span class="bar-list__value"><%= count %></span>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<div class="chart-grid">
+  <section>
+    <h2>Top uploaders</h2>
+    <% if @top_uploaders.any? %>
+      <div class="table-wrap card card--flush">
+        <table class="table">
+          <thead>
+            <tr><th>User</th><th class="numeric">Photos</th><th class="numeric">Storage</th></tr>
+          </thead>
+          <tbody>
+            <% @top_uploaders.each do |id, name, count, bytes| %>
+              <tr>
+                <td><%= link_to name, edit_admin_user_path(id) %></td>
+                <td class="numeric"><%= count %></td>
+                <td class="numeric"><%= number_to_human_size(bytes) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="muted">No uploads yet.</p>
+    <% end %>
+  </section>
+
+  <section>
+    <h2>Actions by type</h2>
+    <div class="table-wrap card card--flush">
+      <table class="table">
+        <thead>
+          <tr><th>Action</th><th class="numeric">Count</th></tr>
+        </thead>
+        <tbody>
+          <% @action_counts.each do |action, count| %>
+            <tr>
+              <td><%= link_to action, admin_action_logs_path(log_action: action), class: "action-name" %></td>
+              <td class="numeric"><%= number_with_delimiter(count) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

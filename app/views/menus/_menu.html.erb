@@ -1,5 +1,5 @@
-<li>
-  <%= menu.label %>
+<li class="submenu">
+  <button type="button" class="submenu__toggle"><%= menu.label %></button>
   <ul>
     <%= render menu.visible_children(user), user: user %>
   </ul>

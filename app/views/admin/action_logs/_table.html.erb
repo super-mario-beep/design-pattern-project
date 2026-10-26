@@ -1,0 +1,36 @@
+<% if logs.any? %>
+  <div class="table-wrap card card--flush">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>When</th>
+          <% if show_user %><th>Who</th><% end %>
+          <th>Action</th>
+          <th>Subject</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% logs.each do |log| %>
+          <tr>
+            <td class="nowrap"><%= time_tag log.created_at, l(log.created_at, format: "%d.%m.%Y %H:%M:%S") %></td>
+            <% if show_user %>
+              <td class="nowrap">
+                <% if log.user %>
+                  <%= link_to log.user.name, edit_admin_user_path(log.user) %>
+                <% else %>
+                  <span class="muted">Guest</span>
+                <% end %>
+              </td>
+            <% end %>
+            <td><code class="action-name"><%= log.action %></code></td>
+            <td class="nowrap"><%= log_subject(log) %></td>
+            <td class="details-cell" title="<%= log_details(log) %>"><%= log_details(log) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="muted">No actions found.</p>
+<% end %>

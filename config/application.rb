@@ -24,6 +24,7 @@ module DesignPatternProject
     # Daily upload limits and package changes follow the Croatian calendar day
     config.time_zone = "Zagreb"
     config.x.photo_storage = ENV.fetch("PHOTO_STORAGE", "local")
+    config.action_view.prefix_partial_path_with_controller_namespace = false
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

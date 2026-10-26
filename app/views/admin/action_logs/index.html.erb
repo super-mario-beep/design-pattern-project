@@ -1,0 +1,35 @@
+<div class="page-header">
+  <div>
+    <h1>User actions</h1>
+    <p class="page-header__subtitle"><%= pluralize(@total, "logged action") %>: who did what, and when</p>
+  </div>
+</div>
+
+<%= form_with url: admin_action_logs_path, method: :get, class: "filters card" do |form| %>
+  <div class="field">
+    <%= form.label :user_id, "User" %>
+    <%= form.select :user_id, [ [ "All users", "" ], [ "Guests", "guest" ] ] + @users.map { |user| [ user.name, user.id ] }, selected: params[:user_id] %>
+  </div>
+  <div class="field">
+    <%= form.label :log_action, "Action" %>
+    <%= form.select :log_action, [ [ "All actions", "" ] ] + @actions.map { |action| [ action, action ] }, selected: params[:log_action] %>
+  </div>
+  <div class="filters__buttons">
+    <%= form.submit "Filter", name: nil, class: "button" %>
+    <%= link_to "Clear", admin_action_logs_path, class: "button button--ghost" %>
+  </div>
+<% end %>
+
+<%= render "admin/action_logs/table", logs: @logs, show_user: true %>
+
+<% if @page > 1 || @next_page %>
+  <nav class="pagination">
+    <% if @page > 1 %>
+      <%= link_to "← Newer", admin_action_logs_path(request.query_parameters.merge(page: @page - 1)), class: "button button--ghost button--small" %>
+    <% end %>
+    <span class="muted">Page <%= @page %></span>
+    <% if @next_page %>
+      <%= link_to "Older →", admin_action_logs_path(request.query_parameters.merge(page: @page + 1)), class: "button button--ghost button--small" %>
+    <% end %>
+  </nav>
+<% end %>

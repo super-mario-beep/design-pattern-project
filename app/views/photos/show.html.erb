@@ -7,34 +7,77 @@
     <% end %>
   </div>
 
-  <aside class="photo-detail__info card">
-    <h1><%= @photo.description.presence || "Untitled" %></h1>
+  <aside class="photo-detail__side">
+    <section class="photo-detail__info card">
+      <h1><%= @photo.description.presence || "Untitled" %></h1>
 
-    <div class="author-line">
-      <span class="avatar" aria-hidden="true"><%= @photo.user.name.first.upcase %></span>
-      <div>
-        <strong><%= @photo.user.name %></strong>
-        <span class="muted">Uploaded <%= time_tag @photo.created_at, l(@photo.created_at, format: "%d.%m.%Y %H:%M") %></span>
+      <div class="author-line">
+        <span class="avatar" aria-hidden="true"><%= @photo.user.name.first.upcase %></span>
+        <div>
+          <strong><%= @photo.user.name %></strong>
+          <span class="muted">Uploaded <%= time_tag @photo.created_at, l(@photo.created_at, format: "%d.%m.%Y %H:%M") %></span>
+        </div>
       </div>
-    </div>
 
-    <%= render "photos/hashtags", photo: @photo %>
+      <%= render "photos/hashtags", photo: @photo %>
 
-    <dl class="details">
-      <dt>Format</dt>
-      <dd><%= @photo.format.upcase %></dd>
-      <dt>Dimensions</dt>
-      <dd><%= @photo.width %> &times; <%= @photo.height %> px</dd>
-      <dt>File size</dt>
-      <dd><%= number_to_human_size(@photo.byte_size) %></dd>
-    </dl>
+      <dl class="details">
+        <dt>Format</dt>
+        <dd><%= @photo.format.upcase %></dd>
+        <dt>Dimensions</dt>
+        <dd><%= @photo.width %> &times; <%= @photo.height %> px</dd>
+        <dt>File size</dt>
+        <dd><%= number_to_human_size(@photo.byte_size) %></dd>
+      </dl>
 
-    <div class="actions">
-      <%= link_to "Open full size", file_photo_path(@photo), class: "button button--ghost" %>
-      <% if can_manage?(@photo) %>
-        <%= link_to "Edit", edit_photo_path(@photo), class: "button" %>
-        <%= button_to "Delete", @photo, method: :delete, class: "button button--danger", form: { data: { turbo_confirm: "Delete this photo?" } } %>
+      <div class="actions">
+        <%= link_to "Open full size", file_photo_path(@photo), class: "button button--ghost" %>
+        <% if can_manage?(@photo) %>
+          <%= link_to "Edit", edit_photo_path(@photo), class: "button" %>
+          <%= button_to "Delete", @photo, method: :delete, class: "button button--danger", form: { data: { turbo_confirm: "Delete this photo?" } } %>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="card download-card">
+      <h2>Download</h2>
+      <% if current_user %>
+        <%= link_to "Download original", download_photo_path(@photo), class: "button button--block", data: { turbo: false } %>
+
+        <details class="download-options">
+          <summary>Download with filters</summary>
+          <%= form_with url: download_photo_path(@photo), method: :get, class: "form", data: { turbo: false } do |form| %>
+            <%= hidden_field_tag :edited, 1 %>
+            <div class="field-row">
+              <div class="field">
+                <%= form.label :resize_width, "Max width" %>
+                <%= form.number_field :resize_width, min: 1, placeholder: "px" %>
+              </div>
+              <div class="field">
+                <%= form.label :resize_height, "Max height" %>
+                <%= form.number_field :resize_height, min: 1, placeholder: "px" %>
+              </div>
+            </div>
+            <div class="field">
+              <%= form.label :format %>
+              <%= form.select :format, [ [ "Same as original", "" ], [ "JPG", "jpg" ], [ "PNG", "png" ], [ "BMP", "bmp" ] ] %>
+            </div>
+            <div class="checkbox-row">
+              <div class="checkbox">
+                <%= form.check_box :sepia %>
+                <%= form.label :sepia, "Sepia" %>
+              </div>
+              <div class="checkbox">
+                <%= form.check_box :blur %>
+                <%= form.label :blur, "Blur" %>
+              </div>
+            </div>
+            <%= form.submit "Download edited", name: nil, class: "button button--ghost button--block" %>
+          <% end %>
+        </details>
+      <% else %>
+        <p class="muted"><%= link_to "Log in", new_session_path %> to download this photo.</p>
       <% end %>
-    </div>
+    </section>
   </aside>
 </article>

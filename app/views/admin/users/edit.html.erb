@@ -1,0 +1,78 @@
+<%= link_to "← All users", admin_users_path, class: "back-link" %>
+
+<div class="page-header">
+  <div class="author-line">
+    <span class="avatar avatar--lg" aria-hidden="true"><%= @user.name_was.to_s.first.to_s.upcase %></span>
+    <div>
+      <h1><%= @user.name_was %></h1>
+      <span class="muted">Member since <%= l @user.created_at.to_date, format: "%d.%m.%Y" %></span>
+    </div>
+  </div>
+</div>
+
+<div class="with-sidebar">
+  <section class="card">
+    <h2>Profile and package</h2>
+
+    <%= render "shared/errors", record: @user %>
+
+    <%= form_with model: @user, url: admin_user_path(@user), class: "form" do |form| %>
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :name %>
+          <%= form.text_field :name, required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :email_address %>
+          <%= form.email_field :email_address, required: true %>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <%= form.label :role %>
+          <%= form.select :role, [ [ "User", "user" ], [ "Admin", "admin" ] ], {}, disabled: @user == Current.user %>
+          <% if @user == Current.user %>
+            <span class="hint">You can't change your own role.</span>
+          <% end %>
+        </div>
+        <div class="field">
+          <%= form.label :tier_name, "Package" %>
+          <%= form.select :tier_name, Tiers.all.map { |tier| [ "#{tier.name} (#{tier.price} €)", tier.name.downcase ] }, selected: @user.current_tier_name %>
+          <span class="hint">An administrator change applies immediately.</span>
+        </div>
+      </div>
+
+      <% if @user.pending_tier_name %>
+        <div class="flash flash-notice">The user requested <strong><%= @user.pending_tier_name.upcase %></strong> from <%= l @user.next_tier_starts_on, format: "%d.%m.%Y" %>. Saving a different package here cancels that request.</div>
+      <% end %>
+
+      <div class="actions">
+        <%= form.submit "Save changes", class: "button" %>
+      </div>
+    <% end %>
+  </section>
+
+  <aside>
+    <%= render "tiers/usage", user: @user, title: "Package and usage" %>
+  </aside>
+</div>
+
+<section class="section">
+  <h2><%= pluralize(@photos.size, "photo") %></h2>
+  <% if @photos.any? %>
+    <div class="photo-grid">
+      <%= render @photos %>
+    </div>
+  <% else %>
+    <p class="muted">This user has not uploaded any photos.</p>
+  <% end %>
+</section>
+
+<section class="section">
+  <div class="section__header">
+    <h2>Recent actions</h2>
+    <%= link_to "View all", admin_action_logs_path(user_id: @user.id) %>
+  </div>
+  <%= render "admin/action_logs/table", logs: @logs, show_user: false %>
+</section>

@@ -1,0 +1,49 @@
+<div class="page-header">
+  <div>
+    <h1>Users</h1>
+    <p class="page-header__subtitle"><%= pluralize(@users.size, "registered user") %></p>
+  </div>
+</div>
+
+<div class="table-wrap card card--flush">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Role</th>
+        <th>Package</th>
+        <th class="numeric">Photos</th>
+        <th class="numeric">Storage</th>
+        <th>Joined</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <% stats = @photo_stats.fetch(user.id, { count: 0, bytes: 0 }) %>
+        <tr>
+          <td>
+            <div class="author-line">
+              <span class="avatar avatar--sm" aria-hidden="true"><%= user.name.first.upcase %></span>
+              <div>
+                <strong><%= user.name %></strong>
+                <span class="muted"><%= user.email_address %></span>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--<%= user.role %>"><%= user.role.upcase %></span></td>
+          <td>
+            <span class="badge badge--<%= user.current_tier_name %>"><%= user.current_tier_name.upcase %></span>
+            <% if user.pending_tier_name %>
+              <span class="muted">&rarr; <%= user.pending_tier_name.upcase %> from <%= l user.next_tier_starts_on, format: "%d.%m.%Y" %></span>
+            <% end %>
+          </td>
+          <td class="numeric"><%= stats[:count] %></td>
+          <td class="numeric"><%= number_to_human_size(stats[:bytes]) %></td>
+          <td class="nowrap"><%= l user.created_at.to_date, format: "%d.%m.%Y" %></td>
+          <td class="numeric"><%= link_to "Manage", edit_admin_user_path(user), class: "button button--small button--ghost" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
